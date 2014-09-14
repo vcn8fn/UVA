@@ -1,0 +1,73 @@
+html {
+	margin: 0;
+	padding: 0;
+	}
+body { 
+	font: 100% georgia, sans-serif;
+	line-height: 1.88889;
+	color: #000000; 
+	background: #fff url(uva.jpg) top right; 
+	margin: 0; 
+	padding: 0;
+	text-align: center;
+	}
+	
+/*	header h1 { 
+		
+	
+		
+		background: transparent url(h1.gif) no-repeat top left;
+		margin-top: 100px;
+		
+		display: block;
+		width: 219px;
+		height: 200px;
+		float: left;
+
+		text-indent: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+	
+		}
+*/	
+	
+
+	#mainTitle {
+		text-align: center;
+		background-color:#ffffff;
+		padding-top:1px;
+		
+		border-bottom: solid #000000;
+	}
+	
+	.page-wrapper {
+	width:600px;
+	margin: auto;
+	padding: 10px 10px 10px 10px;
+	
+	position:relative;
+	width:70%;
+	margin-left:auto;
+	margin-right:auto;
+	
+	border-bottom: solid #000000;
+	border-right: solid #000000;
+	border-left: solid #000000;
+	background-color:#ffffff;
+	}
+	/*
+	#aboutTitle {
+		text-align: center;
+		padding-top:1px;
+		
+		
+	}
+	*/
+	.centerTitles
+	{
+			text-align: center;
+			padding-top:1px;
+	}
+	
+		
+		
