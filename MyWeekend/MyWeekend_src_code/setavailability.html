@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<Title>MyWeekend - Set Your Availability!</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="http://www.parsecdn.com/js/parse-1.3.0.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<script src="js/bootstrap.js"></script>
+	<script src="js/dates.js"></script>
+	<script src="js/dateFormat.js"></script>
+	<script src="js/jquery-dateFormat.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/weekend.css">
+	<script src="js/jquery.blockUI.js"></script>
+
+	</head>
+	<body>
+		<script>
+		Parse.initialize("90jptuT9AV2BjKWEgKrpW0MPdi4ksEHvwcSmLNMs", "EE1u52PnUe6508i85k7ef3JGViDLQwFzOI49Rhei");
+			var currentUser = Parse.User.current();
+			if(!currentUser) {
+				window.location.replace("login.html");
+			} else {
+				
+			}
+			var available = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+		</script>
+				<div id="loading-icon-div">
+				<img src="loading.gif" id="loading-icon">
+			</div>
+
+		<button type="button" class="btn btn-default fontclass" id="home">Home</button>
+
+		<h1 class="fontclass" id="available-title">I'm free...</h1>
+		<div class="text-center">
+			<h3 class="day-title fontclass" id="fday">Friday</h3>
+			<button type="button" class="text-center btn pagination availablebtn morning fontclass" id="1">Morning</button>
+			<button type="button" class="text-center btn pagination availablebtn afternoon fontclass" id="2">Afternoon</button>
+			<button type="button" class="text-center btn pagination availablebtn evening fontclass" id="3">Evening</button>
+			<button type="button" class="text-center btn   all-day" id="4">All Day</button>
+
+			<br>
+			<h3 class="day-title fontclass" id="satday">Saturday</h3>
+			<button type="button" class="text-center btn pagination availablebtn morning fontclass" id="5">Morning</button>
+			<button type="button" class="text-center btn pagination availablebtn afternoon fontclass" id="6">Afternoon</button>
+			<button type="button" class="text-center btn pagination availablebtn evening fontclass" id="7">Evening</button>
+			<button type="button" class="text-center btn   all-day" id="8">All Day</button>
+
+			<br>
+			<h3 class="day-title fontclass" id="sunday">Sunday</h3>
+			<button type="button" class="text-center btn pagination availablebtn morning fontclass" id="9">Morning</button>
+			<button type="button" class="text-center btn pagination availablebtn afternoon fontclass" id="10">Afternoon</button>
+			<button type="button" class="text-center btn pagination availablebtn evening fontclass" id="11">Evening</button>
+			<button type="button" class="text-center btn all-day fontclass" id="12">All Day</button>
+
+			<br>
+			<br>
+			<button type="button" class="btn btn-success done-btn fontclass" id="submit">Done!</button>
+		</div>
+
+	</body>
+	<script>
+	
+		var user_availability = Parse.Object.extend("User_Availability");
+		var query = new Parse.Query(user_availability);
+
+		
+		var date = getWeekEnd();
+		var friday = getWeekEnd();
+		friday.setUTCDate(friday.getUTCDate()-2);
+
+		var saturday = getWeekEnd();
+		saturday.setUTCDate(saturday.getUTCDate()-1);
+
+		var sunday = getWeekEnd();
+
+		$("#fday").html($.format.date(friday, "ddd MMMM D, yyyy"));
+
+		$("#satday").html($.format.date(saturday, "ddd MMMM D, yyyy"));
+
+		$("#sunday").html($.format.date(sunday, "ddd MMMM D, yyyy"));
+
+
+		query.equalTo("userId", currentUser);
+		query.equalTo("weekEnd", date);
+		var userA;
+		query.find({
+			success: function(results) {
+				if(results.length > 0) {
+					userA = results[0];
+					setAvailable(userA.get("generalTimes"));
+				} else {
+					
+				}
+			},
+				error:function(error) {
+					var Errors = Parse.Object.extend("Errors");
+					var err = new Errors();
+					err.set("userId", currentUser);
+					err.set("error", error);
+					err.save();
+				}
+		});
+
+	function setAvailable(array){
+		if(array != null) {
+			available = array;
+			var i;
+			for(i=0; i<13; i++) {
+				if(array[i] == 1) {
+					$("#"+i).css('background-color', '#ffa54c');
+ 	 			}
+			}
+		}
+	}
+
+	$("#home").click(function() {
+		window.location.assign("index.html");
+	});
+
+	$("#1").click(function() {
+		var btn = $(this);
+		selected(btn, 1);
+	});
+
+	$("#2").click(function() {
+		var btn = $(this);
+		selected(btn, 2);
+	});
+
+	$("#3").click(function() {
+		var btn = $(this);
+		selected(btn, 3);
+	});
+
+	$("#4").click(function() {
+		var btn = $(this);
+		selected(btn, 4);
+	});
+
+	$("#5").click(function() {
+		var btn = $(this);
+		selected(btn, 5);
+	});
+
+	$("#6").click(function() {
+		var btn = $(this);
+		selected(btn, 6);
+	});
+
+	$("#7").click(function() {
+		var btn = $(this);
+		selected(btn, 7);
+	});
+
+	$("#8").click(function() {
+		var btn = $(this);
+		selected(btn, 8);
+	});
+
+	$("#9").click(function() {
+		var btn = $(this);
+		selected(btn, 9);
+	});
+
+	$("#10").click(function() {
+		var btn = $(this);
+		selected(btn, 10);
+	});
+
+	$("#11").click(function() {
+		var btn = $(this);
+		selected(btn, 11);
+	});
+
+	$("#12").click(function() {
+		var btn = $(this);
+		selected(btn, 12);
+	});
+
+	function selected (btn, i) {
+		var index = available[i];
+		if(index == 0) {
+			available[i]=1;
+			btn.css('background-color', '#ffa54c');
+ 	 		if(i < 4 && available[4]==0) {
+ 	 			if((available[1]+available[2]+available[3]) == 3) {
+ 	 				available[4]=1;
+ 	 				$("#4").css('background-color', '#ffa54c');
+ 	 			}
+ 	 		} else if(i<8 && i > 4 && available[8]==0) {
+ 	 			if((available[5]+available[6]+available[7]) == 3) {
+ 	 				available[8]=1;
+ 	 				$("#8").css('background-color', '#ffa54c');
+ 	 			}
+ 	 		} else if(i>8 && i<12 && available[12]==0) {
+ 	 			if((available[9]+available[10]+available[11]) == 3) {
+ 	 				available[12]=1;
+ 	 				$("#12").css('background-color', '#ffa54c');
+ 	 			}
+ 	 		}
+ 	 		if(i == 4) {
+ 	 				available[1]=1;
+ 	 				$("#1").css('background-color', '#ffa54c');
+ 	 			
+ 	 				available[2]=1;
+ 	 				$("#2").css('background-color', '#ffa54c');
+ 	 			
+ 	 			
+ 	 				available[3]=1;
+ 	 				$("#3").css('background-color', '#ffa54c');
+ 	 			
+ 	 		}else if(i == 8) {
+ 	 			
+ 	 				available[5]=1;
+ 	 				$("#5").css('background-color', '#ffa54c');
+ 	 			
+ 	 				available[6]=1;
+ 	 				$("#6").css('background-color', '#ffa54c');
+ 	 			
+ 	 			
+ 	 				available[7]=1;
+ 	 				$("#7").css('background-color', '#ffa54c');
+ 	 			
+ 	 		} else if(i == 12) {
+
+ 	 				available[9]=1;
+ 	 				$("#9").css('background-color', '#ffa54c');
+ 	 	
+ 	 				available[10]=1;
+ 	 				$("#10").css('background-color', '#ffa54c');
+ 	 		
+ 	 				available[11]=1;
+ 	 				$("#11").css('background-color', '#ffa54c');
+ 	 			
+ 	 		}
+		} else {
+			if(i== 1) {
+ 	 			$("#"+i).css('background-color', '#98f2e0');
+ 	 		}else if(i == 2) {
+  	 			$("#"+i).css('background-color', '#02e2e2');
+	 		} else if(i == 3) {
+  	 			$("#"+i).css('background-color', '#00c1b1');	 					
+ 	 		} else if(i == 4) {
+ 	 			$("#"+i).css('background-color', '#aaddd9');
+ 	 		}
+ 	 		else if(i == 5) {
+ 	 			$("#"+i).css('background-color', '#98f2e0');		
+ 	 		}else if(i == 6) {
+  	 			$("#"+i).css('background-color', '#02e2e2');
+	 		}else if(i == 7) {
+ 	 			$("#"+i).css('background-color', '#00c1b1');
+ 	 		} else if(i==8) {
+ 	 			$("#"+i).css('background-color', '#aaddd9');
+ 	 		} else if(i == 9) {
+ 	 			$("#"+i).css('background-color', '#98f2e0');
+ 	 		}else if(i == 10) {
+  	 			$("#"+i).css('background-color', '#02e2e2');
+	 		} else if(i==11) {
+  	 			$("#"+i).css('background-color', '#00c1b1');	 					
+ 	 		} else {
+ 	 			$("#"+i).css('background-color', '#aaddd9');
+ 	 		}
+ 	 		//btn.css('background-color', '#3071A9');
+ 	 		
+ 	 		available[i]=0;
+ 	 		if(i < 4 && available[4] == 1) {
+ 	 			available[4]=0;
+ 	 			$("#4").css('background-color', '#aaddd9');
+ 	 		} else if(i<8 && i > 4 && available[8] == 1)  {
+ 	 			available[8]=0;
+ 	 			$("#8").css('background-color', '#aaddd9');
+ 	 		} else if(i>8 && i<12 && available[12] == 1) {
+ 	 			available[12]=0;
+ 	 			$("#12").css('background-color', '#aaddd9');
+ 	 		}
+
+ 	 		if(i == 4) {
+ 	 			var j;
+ 	 			for(j = 1; j<4; j++) {
+ 	 				available[j] = 0;
+ 	 				if(j == 1) {
+ 	 					$("#"+j).css('background-color', '#98f2e0');
+ 	 				}else if(j == 2) {
+  	 					$("#"+j).css('background-color', '#02e2e2');
+	 				} else {
+  	 					$("#"+j).css('background-color', '#00c1b1');	 					
+ 	 				}
+ 	 			}
+ 	 		}else if(i == 8) {
+ 	 			var j;
+ 	 			for(j = 5; j<8; j++) {
+ 	 				available[j] = 0;
+					if(j == 5) {
+ 	 					$("#"+j).css('background-color', '#98f2e0');
+ 	 				}else if(j == 6) {
+  	 					$("#"+j).css('background-color', '#02e2e2');
+	 				} else {
+  	 					$("#"+j).css('background-color', '#00c1b1');	 					
+ 	 				} 	 			}
+ 	 		} else if(i == 12) {
+ 	 			var j;
+ 	 			for(j = 9; j<12; j++) {
+ 	 				available[j] = 0;
+ 	 				if(j == 9) {
+ 	 					$("#"+j).css('background-color', '#98f2e0');
+ 	 				}else if(j == 10) {
+  	 					$("#"+j).css('background-color', '#02e2e2');
+	 				} else {
+  	 					$("#"+j).css('background-color', '#00c1b1');	 					
+ 	 				}
+ 	 			}
+ 	 		}
+ 	 		
+		}
+	}
+
+
+	$("#submit").click(function() {
+		$.blockUI({
+			message: $("#loading-icon-div")
+		});
+		var currentUser = Parse.User.current();
+		var user_availability = Parse.Object.extend("User_Availability");
+		var query = new Parse.Query(user_availability);
+
+		var i;
+		var timescount = 0;
+		for(i=1; i<13;i++) {
+			if(1 == available[i]) {
+				timescount++;
+			}
+		}
+		
+		var date = getWeekEnd();
+
+		query.equalTo("userId", currentUser);
+		query.equalTo("weekEnd", date);
+		var userA;
+		query.first({
+			success: function(result) {
+				if(result) {
+					userA = result;
+				} else {
+					userA = new user_availability();
+					userA.set("userId", currentUser);
+					userA.set("weekEnd", date);
+				}
+				userA.set("generalTimes", available);
+				userA.set("timesCount", timescount);
+				//saving/updating user availability
+				userA.save(null, {
+					success:function(object) {
+						updateGroupAvailability(date, available);
+					}
+				});
+				
+			},
+				error:function(error) {
+					var Errors = Parse.Object.extend("Errors");
+					var err = new Errors();
+					err.set("userId", currentUser);
+					err.set("error", error);
+					err.save();
+				}
+		});
+		
+	});
+	
+
+	function updateGroupAvailability(weekEnd, available2) {
+		var user_group = Parse.Object.extend("User_Group");
+		var currentUser = Parse.User.current();
+
+		var query = new Parse.Query(user_group);
+
+		query.equalTo("userId", currentUser);
+		query.equalTo("userStatus", 1);
+		query.find({
+			success: function(results) {
+				if(results){
+				var i;
+				for(i = 0; i<results.length; i++) {
+					var increment = false;
+					if((results[i].get("weekEnd") - weekEnd) != 0 || results[i].get("responded")==null || results[i].get("responded") == false) {
+						results[i].set("weekEnd", weekEnd);
+						increment = true;
+						results[i].set("responded", true);
+						results[i].set("interested", true);
+						results[i].set("availability", available2);
+					}
+					
+					results[i].save(null, {
+							success:function(object) {
+								Parse.Cloud.run("updateAddedTimes", {groupId_string:object.get("groupId_string")},{
+								success:function() {
+									setTimeout(function() {
+								if(window.location.search != "") {
+									window.location.replace("event.html?"+window.location.search.substring(1));
+								} else {
+									window.location.assign("index.html");
+								}
+
+								}, 200);
+
+								}, error:function(error) {
+									var Errors = Parse.Object.extend("Errors");
+									var err = new Errors();
+									err.set("userId", currentUser);
+									err.set("error", error);
+									err.save();
+								}
+								});
+							},
+				error:function(error) {
+					var Errors = Parse.Object.extend("Errors");
+					var err = new Errors();
+					err.set("userId", currentUser);
+					err.set("error", error);
+					err.save();
+				}
+					});
+					
+				}
+			}
+		},
+				error:function(error) {
+					var Errors = Parse.Object.extend("Errors");
+					var err = new Errors();
+					err.set("userId", currentUser);
+					err.set("error", error);
+					err.save();
+				}
+		});
+	}
+	//saving/updating group availability
+
+	</script>
+</html>
